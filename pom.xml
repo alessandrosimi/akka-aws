@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.exemplary.akka</groupId>
+    <artifactId>akka-aws_2.11</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Akka Aws</name>
+    <url>http://exemplary.io</url>
+    <description>Parent pom for Akka AWS libraries</description>
+    <developers>
+        <developer>
+            <id>alessandrosimi</id>
+            <name>Alessandro Simi</name>
+            <url>http://exemplary.io</url>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>scm:git:git@github.com:alessandrosimi/aws-aws.git</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala.version>2.11</scala.version>
+        <scala.lib.version>2.11.4</scala.lib.version>
+        <aws.version>1.10.5.1</aws.version>
+        <akka.version>2.5.1</akka.version>
+        <aws.skd.version>${aws.version}</aws.skd.version>
+        <scalatest.version>3.0.1</scalatest.version>
+        <mockito.version>1.10.19</mockito.version>
+    </properties>
+
+    <modules>
+        <module>cluster</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Scala -->
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.lib.version}</version>
+            </dependency>
+            <!-- Akka -->
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-cluster_${scala.version}</artifactId>
+                <version>${akka.version}</version>
+            </dependency>
+            <!-- Aws Auto Scaling -->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-autoscaling</artifactId>
+                <version>${aws.skd.version}</version>
+            </dependency>
+            <!-- Aws Ec2 -->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-ec2</artifactId>
+                <version>${aws.skd.version}</version>
+            </dependency>
+            <!-- Test -->
+            <!-- Scala Test -->
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_${scala.version}</artifactId>
+                <version>${scalatest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Mokito -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Profiles -->
+    <profiles>
+        <profile>
+            <id>scala12</id>
+            <properties>
+                <scala.version>2.12</scala.version>
+                <scala.lib.version>2.12.1</scala.lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Gpg -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Sonatype -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.2</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
